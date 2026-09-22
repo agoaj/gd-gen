@@ -45,6 +45,15 @@ const std::string type_to_variant(GType type)
         case GType::Object: return "OBJECT";
         case GType::Boolean: return "BOOL";
         case GType::PackedByteArray: return "PACKED_BYTE_ARRAY";
+        case GType::PackedInt32Array: return "PACKED_INT32_ARRAY";
+        case GType::PackedInt64Array: return "PACKED_INT64_ARRAY";
+        case GType::PackedFloat32Array: return "PACKED_FLOAT32_ARRAY";
+        case GType::PackedFloat64Array: return "PACKED_FLOAT64_ARRAY";
+        case GType::PackedStringArray: return "PACKED_STRING_ARRAY";
+        case GType::PackedVector2Array: return "PACKED_VECTOR2_ARRAY";
+        case GType::PackedVector3Array: return "PACKED_VECTOR3_ARRAY";
+        case GType::PackedColorArray: return "PACKED_COLOR_ARRAY";
+        case GType::PackedVector4Array: return "PACKED_VECTOR4_ARRAY";
         case GType::String: return "STRING";
         case GType::Enum: return "INT";
         default: std::cerr << "Invalid type\n"; exit(1);

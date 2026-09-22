@@ -73,6 +73,42 @@ std::vector<GArgument> GArgument::read_garguments(TokenStream &token_stream)
         {
             gArgument.variantType = GType::PackedByteArray;
         }
+        else if (gArgument.raw_type == "PackedInt32Array")
+        {
+            gArgument.variantType = GType::PackedInt32Array;
+        }
+        else if (gArgument.raw_type == "PackedInt64Array")
+        {
+            gArgument.variantType = GType::PackedInt64Array;
+        }
+        else if (gArgument.raw_type == "PackedFloat32Array")
+        {
+            gArgument.variantType = GType::PackedFloat32Array;
+        }
+        else if (gArgument.raw_type == "PackedFloat64Array")
+        {
+            gArgument.variantType = GType::PackedFloat64Array;
+        }
+        else if (gArgument.raw_type == "PackedStringArray")
+        {
+            gArgument.variantType = GType::PackedStringArray;
+        }
+        else if (gArgument.raw_type == "PackedVector2Array")
+        {
+            gArgument.variantType = GType::PackedVector2Array;
+        }
+        else if (gArgument.raw_type == "PackedVector3Array")
+        {
+            gArgument.variantType = GType::PackedVector3Array;
+        }
+        else if (gArgument.raw_type == "PackedColorArray")
+        {
+            gArgument.variantType = GType::PackedColorArray;
+        }
+        else if (gArgument.raw_type == "PackedVector4Array")
+        {
+            gArgument.variantType = GType::PackedVector4Array;
+        }
         else if (gArgument.raw_type.starts_with("Ref<"))
         {
             gArgument.variantType = GType::Resource;
