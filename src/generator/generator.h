@@ -56,6 +56,7 @@ const std::string type_to_variant(GType type)
         case GType::PackedVector4Array: return "PACKED_VECTOR4_ARRAY";
         case GType::String: return "STRING";
         case GType::Enum: return "INT";
+        case GType::Variant: return "NIL";
         default: std::cerr << "Invalid type\n"; exit(1);
     }
 }
