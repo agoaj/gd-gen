@@ -21,5 +21,6 @@ enum class GType
     PackedColorArray,
     PackedVector4Array,
     String,
+    Variant,
     Enum
 };

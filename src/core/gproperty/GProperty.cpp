@@ -78,6 +78,10 @@ GProperty::GProperty(TokenStream &token_stream)
     {
         variantType = GType::PackedVector4Array;
     }
+    else if (rawType == "Variant")
+    {
+        variantType = GType::Variant;
+    }
     else if (rawType.starts_with("Ref<"))
     {
         variantType = GType::Resource;
@@ -156,6 +160,10 @@ GPropertyOptions::GPropertyOptions(TokenStream &token_stream)
         else if (token.value == "ReadOnly")
         {
             readOnly = true;
+        }
+        else if (token.value == "Untyped")
+        {
+            untyped = true;
         }
         else if (token.value == "Description")
         {

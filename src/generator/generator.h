@@ -486,7 +486,11 @@ class Generator
         std::string usage = generate_property_usage(property);
 
         std::string variant = type_to_variant(property.variantType);
-
+        if(property.options.untyped && property.variantType == GType::Variant)
+        {
+            variant = "NIL";
+            usage += " | PROPERTY_USAGE_NIL_IS_VARIANT";
+        }
         std::string registered_name;
 
         if (!nested_group.empty())
