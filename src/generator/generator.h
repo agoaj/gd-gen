@@ -379,7 +379,7 @@ class Generator
         {
             usage = "PROPERTY_USAGE_NONE";
         }
-        else if (property.options.readOnly)
+        if (property.options.readOnly)
         {
             usage += " | PROPERTY_USAGE_READ_ONLY";
         }
