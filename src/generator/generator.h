@@ -532,6 +532,59 @@ class Generator
 
         return {property_info_no_grouping, property_info_grouping + "PROPERTY_USAGE_NONE)"};
     }
+    
+    void sortClasses()
+    {
+        std::unordered_map<std::string, GClass*> classNameToGClassMap;
+            for (GClass& gclass : classes)
+            {
+                classNameToGClassMap[gclass.name] = &gclass;
+            }
+            auto GetClassForName = [&](const std::string& className)->GClass*
+            {
+                auto it = classNameToGClassMap.find(className);
+                return it == classNameToGClassMap.end() ? nullptr : it->second;
+            };
+            struct GClassPath
+            {
+                std::string path;
+                int pathParts;
+                GClassPath() = default;
+                GClassPath(const std::string&& inPath, int inParts) : path(inPath), pathParts(inParts) {}
+            };
+            std::unordered_map<std::string, GClassPath> classNameToPathMap;
+        
+            for (int i = 0; i < classes.size(); i++)
+            {
+                GClass& gclass = classes[i];
+                std::vector<GClass*> parents;
+                for (GClass* parent = GetClassForName(gclass.parentName); parent; parent = GetClassForName(parent->parentName))
+                {
+                    parents.push_back(parent);
+                }
+                std::string classPath;
+                classPath.reserve(128);
+                for (int k = parents.size()-1; k >= 0; --k)
+                {
+                    if (!classPath.empty())
+                        classPath += "/";
+                    classPath += parents[k]->name;
+                }
+                if (!classPath.empty())
+                    classPath += "/";
+                classPath += "/" + gclass.name;
+                classNameToPathMap[gclass.name] = GClassPath(std::move(classPath), parents.size());
+            }
+        
+            std::sort(classes.begin(), classes.end(), [&](const GClass& gclassA, const GClass& gclassB) -> bool
+            {
+                GClassPath& pathA = classNameToPathMap[gclassA.name];
+                GClassPath& pathB = classNameToPathMap[gclassB.name];
+                if (pathA.pathParts != pathB.pathParts )
+                    return pathA.pathParts < pathB.pathParts;
+                return pathA.path < pathB.path;
+            });
+    }
 
    public:
     void generate(std::filesystem::path srcFolder)
@@ -764,6 +817,9 @@ class Generator
             GeneratedFile.close();
         }
 
+        //Sort classes so that parents are loaded before their children.
+        sortClasses();
+        
         // std::cout << "Generated " << structs[0].name << " classes" << std::endl;
 
         generate_register_types(classes, srcFolder, genFolder);
