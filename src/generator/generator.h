@@ -724,7 +724,7 @@ class Generator
                     }
                     else
                     {
-                        GeneratedFile << "ClassDB::bind_static_method(\"_class.name\", D_METHOD(\"" << function.name << "\"";
+                        GeneratedFile << "ClassDB::bind_static_method(\"" << _class.name << "\", D_METHOD(\"" << function.name << "\"";
                         for (auto &argument : function.arguments)
                         {
                             GeneratedFile << ", \"" << argument.name << "\"";
