@@ -713,12 +713,24 @@ class Generator
 
                 for (auto function : _class.functions)
                 {
-                    GeneratedFile << "ClassDB::bind_method(D_METHOD(\"" << function.name << "\"";
-                    for (auto &argument : function.arguments)
+                    if (!function.isStatic)
                     {
-                        GeneratedFile << ", \"" << argument.name << "\"";
+                        GeneratedFile << "ClassDB::bind_method(D_METHOD(\"" << function.name << "\"";
+                        for (auto &argument : function.arguments)
+                        {
+                            GeneratedFile << ", \"" << argument.name << "\"";
+                        }
+                        GeneratedFile << "), &" << _class.name << "::" << function.name << ");\\\n";
                     }
-                    GeneratedFile << "), &" << _class.name << "::" << function.name << ");\\\n";
+                    else
+                    {
+                        GeneratedFile << "ClassDB::bind_static_method(\"_class.name\", D_METHOD(\"" << function.name << "\"";
+                        for (auto &argument : function.arguments)
+                        {
+                            GeneratedFile << ", \"" << argument.name << "\"";
+                        }
+                        GeneratedFile << "), &" << _class.name << "::" << function.name << ");\\\n";
+                    }
                 }
 
                 for (auto property : _class.properties)
