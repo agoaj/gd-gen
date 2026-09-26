@@ -572,7 +572,7 @@ class Generator
                 }
                 if (!classPath.empty())
                     classPath += "/";
-                classPath += "/" + gclass.name;
+                classPath += gclass.name;
                 classNameToPathMap[gclass.name] = GClassPath(std::move(classPath), parents.size());
             }
         
