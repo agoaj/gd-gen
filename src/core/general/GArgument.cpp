@@ -37,6 +37,12 @@ std::vector<GArgument> GArgument::read_garguments(TokenStream &token_stream)
             }
             token = token_stream.next();
         }
+        
+        if (token.token == GToken::Const)
+        {
+            token = token_stream.next();
+            gArgument.isConst = true;
+        }
 
         if (token.token != GToken::Identifier)
         {
