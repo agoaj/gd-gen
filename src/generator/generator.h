@@ -261,17 +261,20 @@ class Generator
                 requirements +=
                     ") { array.append(\"Missing " + final_property_accessor + "\"); }\\\n";
             }
-
-            GeneratedFile << "notify_property_list_changed();\\\n}\\\n";
+            if (!property.isStatic)
+                GeneratedFile << "notify_property_list_changed();\\\n}\\\n";
+            else //Can't call notify from a static method
+                GeneratedFile << "\\\n}\\\n";
             return;
         }
 
         auto pointer_accessor = property.isPointer ? "*" : "";
         auto static_declaration = property.isStatic ? "static " : "";
+        auto const_getter = property.isStatic ? "" : "const ";
         if (generate_get)
         {
             GeneratedFile << static_declaration << property.rawType << pointer_accessor << " generated_get_"
-                          << sanitized_property_name << "() const {\\\n\treturn "
+                          << sanitized_property_name << "() "<< const_getter <<"{\\\n\treturn "
                           << final_property_accessor << ";\\\n}\\\n";
         }
         if (generate_set)
