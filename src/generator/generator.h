@@ -423,7 +423,7 @@ class Generator
             }
             else
             {
-                GeneratedFile << "ClassDB::bind_static_method(D_METHOD(\"" << _class.name << "\", \"get_" << final_property_name
+                GeneratedFile << "ClassDB::bind_static_method(\"" << _class.name << "\",D_METHOD(\"get_" << final_property_name
                               << "\"), &" << _class.name << "::generated_get_" << final_property_name
                               << ");\\\n";
             }
@@ -438,7 +438,7 @@ class Generator
             }
             else
             {
-                GeneratedFile << "ClassDB::bind_static_method(D_METHOD(\"" << _class.name << "\", \"set_" << final_property_name
+                GeneratedFile << "ClassDB::bind_static_method(\"" << _class.name << "\",D_METHOD(\"set_" << final_property_name
                               << "\", \"value\"), &" << _class.name << "::generated_set_"
                               << final_property_name << ");\\\n";
             }
