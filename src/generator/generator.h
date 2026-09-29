@@ -200,8 +200,6 @@ class Generator
         bool generate_get = property.options.custom_getter.empty();
         bool generate_set = property.options.custom_setter.empty();
 
-        auto notify_property_list_statement = property.isStatic ? "" : "notify_property_list_changed();\\\n";
-        
         const auto &enum_ = enums.find(property.rawType);
         if (enum_ != enums.end())
         {
@@ -216,7 +214,7 @@ class Generator
                 GeneratedFile << "void generated_set_" << sanitized_property_name << "(int value"
                               << "){\\\n\t" << final_property_accessor << " = static_cast<"
                               << property.rawType
-                              << ">(value);\\\n" << notify_property_list_statement <<"}\\\n";
+                              << ">(value);\\\n notify_property_list_changed();\\\n}\\\n";
             }
             return;
         }
@@ -263,22 +261,22 @@ class Generator
                 requirements +=
                     ") { array.append(\"Missing " + final_property_accessor + "\"); }\\\n";
             }
-                GeneratedFile << notify_property_list_statement <<"}\\\n";
+
+            GeneratedFile << "notify_property_list_changed();\\\n}\\\n";
             return;
         }
 
         auto pointer_accessor = property.isPointer ? "*" : "";
-        auto static_declaration = property.isStatic ? "static " : "";
-        auto const_getter = property.isStatic ? "" : "const ";
+
         if (generate_get)
         {
-            GeneratedFile << static_declaration << property.rawType << pointer_accessor << " generated_get_"
-                          << sanitized_property_name << "() "<< const_getter <<"{\\\n\treturn "
+            GeneratedFile << property.rawType << pointer_accessor << " generated_get_"
+                          << sanitized_property_name << "() const {\\\n\treturn "
                           << final_property_accessor << ";\\\n}\\\n";
         }
         if (generate_set)
         {
-            GeneratedFile << static_declaration << "void generated_set_" << sanitized_property_name << "("
+            GeneratedFile << "void generated_set_" << sanitized_property_name << "("
                           << property.rawType << pointer_accessor << " value" << "){\\\n\t"
                           << final_property_accessor << " = value;\\\n";
 
@@ -292,7 +290,7 @@ class Generator
                                 "\"); }\\\n";
             }
 
-            GeneratedFile << notify_property_list_statement << "}\\\n";
+            GeneratedFile << "notify_property_list_changed();\\\n}\\\n";
         }
     }
 
@@ -415,33 +413,15 @@ class Generator
 
         if (property.options.custom_getter.empty())
         {
-            if (!property.isStatic)
-            {
-                GeneratedFile << "ClassDB::bind_method(D_METHOD(\"get_" << final_property_name
-                              << "\"), &" << _class.name << "::generated_get_" << final_property_name
-                              << ");\\\n";
-            }
-            else
-            {
-                GeneratedFile << "ClassDB::bind_static_method(\"" << _class.name << "\",D_METHOD(\"get_" << final_property_name
-                              << "\"), &" << _class.name << "::generated_get_" << final_property_name
-                              << ");\\\n";
-            }
+            GeneratedFile << "ClassDB::bind_method(D_METHOD(\"get_" << final_property_name
+                          << "\"), &" << _class.name << "::generated_get_" << final_property_name
+                          << ");\\\n";
         }
         if (property.options.custom_setter.empty())
         {
-            if (!property.isStatic)
-            {
-                GeneratedFile << "ClassDB::bind_method(D_METHOD(\"set_" << final_property_name
-                              << "\", \"value\"), &" << _class.name << "::generated_set_"
-                              << final_property_name << ");\\\n";
-            }
-            else
-            {
-                GeneratedFile << "ClassDB::bind_static_method(\"" << _class.name << "\",D_METHOD(\"set_" << final_property_name
-                              << "\", \"value\"), &" << _class.name << "::generated_set_"
-                              << final_property_name << ");\\\n";
-            }
+            GeneratedFile << "ClassDB::bind_method(D_METHOD(\"set_" << final_property_name
+                          << "\", \"value\"), &" << _class.name << "::generated_set_"
+                          << final_property_name << ");\\\n";
         }
 
         // Properties are not registered for the editor here, that is done in

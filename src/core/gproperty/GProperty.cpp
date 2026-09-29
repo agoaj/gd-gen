@@ -11,8 +11,6 @@ GProperty::GProperty(TokenStream &token_stream)
     
     while (token.token == GToken::Const || token.token == GToken::Mutable || token.token == GToken::Static)
     {
-        if (token.token == GToken::Static)
-            isStatic = true;
         token = token_stream.next();
     }
     

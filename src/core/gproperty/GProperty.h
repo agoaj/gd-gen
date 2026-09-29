@@ -44,7 +44,6 @@ struct GProperty
     std::string rawType;
     std::string name;
     bool isPointer = false;
-    bool isStatic = false;
     GPropertyOptions options;
 
     GProperty() {}
