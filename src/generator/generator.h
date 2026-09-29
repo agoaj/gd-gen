@@ -200,6 +200,8 @@ class Generator
         bool generate_get = property.options.custom_getter.empty();
         bool generate_set = property.options.custom_setter.empty();
 
+        auto notify_property_list_statement = property.isStatic ? "" : "notify_property_list_changed();\\\n";
+        
         const auto &enum_ = enums.find(property.rawType);
         if (enum_ != enums.end())
         {
@@ -214,7 +216,7 @@ class Generator
                 GeneratedFile << "void generated_set_" << sanitized_property_name << "(int value"
                               << "){\\\n\t" << final_property_accessor << " = static_cast<"
                               << property.rawType
-                              << ">(value);\\\n notify_property_list_changed();\\\n}\\\n";
+                              << ">(value);\\\n" << notify_property_list_statement <<"}\\\n";
             }
             return;
         }
@@ -261,10 +263,7 @@ class Generator
                 requirements +=
                     ") { array.append(\"Missing " + final_property_accessor + "\"); }\\\n";
             }
-            if (!property.isStatic)
-                GeneratedFile << "notify_property_list_changed();\\\n}\\\n";
-            else //Can't call notify from a static method
-                GeneratedFile << "\\\n}\\\n";
+                GeneratedFile << notify_property_list_statement <<"}\\\n";
             return;
         }
 
@@ -293,7 +292,7 @@ class Generator
                                 "\"); }\\\n";
             }
 
-            GeneratedFile << "notify_property_list_changed();\\\n}\\\n";
+            GeneratedFile << notify_property_list_statement << "}\\\n";
         }
     }
 
