@@ -8,6 +8,14 @@ GProperty::GProperty(TokenStream &token_stream)
     TokenValue token;
 
     token = token_stream.next();
+    
+    while (token.token == GToken::Const || token.token == GToken::Mutable || token.token == GToken::Static)
+    {
+        if (token.token == GToken::Static)
+            isStatic = true;
+        token = token_stream.next();
+    }
+    
     if (token.token != GToken::Identifier)
     {
         Logger::log("GProperty expected an identifier for type, got " + token.value,

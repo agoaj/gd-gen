@@ -267,16 +267,16 @@ class Generator
         }
 
         auto pointer_accessor = property.isPointer ? "*" : "";
-
+        auto static_declaration = property.isStatic ? "static " : "";
         if (generate_get)
         {
-            GeneratedFile << property.rawType << pointer_accessor << " generated_get_"
+            GeneratedFile << static_declaration << property.rawType << pointer_accessor << " generated_get_"
                           << sanitized_property_name << "() const {\\\n\treturn "
                           << final_property_accessor << ";\\\n}\\\n";
         }
         if (generate_set)
         {
-            GeneratedFile << "void generated_set_" << sanitized_property_name << "("
+            GeneratedFile << static_declaration << "void generated_set_" << sanitized_property_name << "("
                           << property.rawType << pointer_accessor << " value" << "){\\\n\t"
                           << final_property_accessor << " = value;\\\n";
 
@@ -413,15 +413,33 @@ class Generator
 
         if (property.options.custom_getter.empty())
         {
-            GeneratedFile << "ClassDB::bind_method(D_METHOD(\"get_" << final_property_name
-                          << "\"), &" << _class.name << "::generated_get_" << final_property_name
-                          << ");\\\n";
+            if (!property.isStatic)
+            {
+                GeneratedFile << "ClassDB::bind_method(D_METHOD(\"get_" << final_property_name
+                              << "\"), &" << _class.name << "::generated_get_" << final_property_name
+                              << ");\\\n";
+            }
+            else
+            {
+                GeneratedFile << "ClassDB::bind_static_method(D_METHOD(\"" << _class.name << "\", \"get_" << final_property_name
+                              << "\"), &" << _class.name << "::generated_get_" << final_property_name
+                              << ");\\\n";
+            }
         }
         if (property.options.custom_setter.empty())
         {
-            GeneratedFile << "ClassDB::bind_method(D_METHOD(\"set_" << final_property_name
-                          << "\", \"value\"), &" << _class.name << "::generated_set_"
-                          << final_property_name << ");\\\n";
+            if (!property.isStatic)
+            {
+                GeneratedFile << "ClassDB::bind_method(D_METHOD(\"set_" << final_property_name
+                              << "\", \"value\"), &" << _class.name << "::generated_set_"
+                              << final_property_name << ");\\\n";
+            }
+            else
+            {
+                GeneratedFile << "ClassDB::bind_static_method(D_METHOD(\"" << _class.name << "\", \"set_" << final_property_name
+                              << "\", \"value\"), &" << _class.name << "::generated_set_"
+                              << final_property_name << ");\\\n";
+            }
         }
 
         // Properties are not registered for the editor here, that is done in
