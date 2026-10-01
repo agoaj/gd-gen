@@ -18,15 +18,11 @@ std::vector<GArgument> GArgument::read_garguments(TokenStream &token_stream)
 
     while (!token_stream.empty())
     {
-        token = token_stream.next();
-
         if (token.token == GToken::RightParenthesis)
         {
             break;
         }
-
-        GArgument gArgument = {};
-
+        
         if (arguments.size() > 0)
         {
             if (token.token != GToken::Comma)
@@ -37,6 +33,15 @@ std::vector<GArgument> GArgument::read_garguments(TokenStream &token_stream)
             }
             token = token_stream.next();
         }
+        else
+            token = token_stream.next();
+
+        if (token.token == GToken::RightParenthesis)
+        {
+            break;
+        }
+
+        GArgument gArgument = {};
         
         if (token.token == GToken::Const)
         {
@@ -132,6 +137,23 @@ std::vector<GArgument> GArgument::read_garguments(TokenStream &token_stream)
         }
         gArgument.name = token.value;
 
+        token = token_stream.next();
+        
+        if (token.token == GToken::Equal)
+        {
+            token = token_stream.next();
+            if (token.token == GToken::Comma && token.token == GToken::RightParenthesis)
+            {
+                Logger::log("GArguments expected value after =, got '" + token.value + "'",
+                        LogLevel::Error, token_stream.get_filename(), token.line);
+                exit(1);
+            }
+            
+            gArgument.value = token.value;
+            
+            token = token_stream.next();
+        }
+        
         arguments.push_back(gArgument);
     }
 

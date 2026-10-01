@@ -773,7 +773,15 @@ class Generator
                         {
                             GeneratedFile << ", \"" << argument.name << "\"";
                         }
-                        GeneratedFile << "), &" << _class.name << "::" << function.name << ");\\\n";
+                        GeneratedFile << "), &" << _class.name << "::" << function.name;
+                        for (auto &argument : function.arguments)
+                        {
+                            if (!argument.value.empty())
+                            {
+                                GeneratedFile << ", DEFVAL(" << argument.value << ")";
+                            }
+                        }
+                        GeneratedFile << ");\\\n";
                     }
                     else
                     {
@@ -782,7 +790,16 @@ class Generator
                         {
                             GeneratedFile << ", \"" << argument.name << "\"";
                         }
-                        GeneratedFile << "), &" << _class.name << "::" << function.name << ");\\\n";
+                        GeneratedFile << "), &" << _class.name << "::" << function.name; 
+                        
+                        for (auto &argument : function.arguments)
+                        {
+                            if (!argument.value.empty())
+                            {
+                                GeneratedFile << ", DEFVAL(" << argument.value << ")";
+                            }
+                        }
+                        GeneratedFile << ");\\\n";
                     }
                 }
 

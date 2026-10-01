@@ -12,6 +12,8 @@ struct GArgument
     GType variantType = GType::Invalid;
     std::string raw_type;
     std::string name;
+    std::string value;
+    
     bool isPointer = false;
     bool isConst = false;
 
