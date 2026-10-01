@@ -617,13 +617,13 @@ class Generator
                 switch (token.token)
                 {
                     case GToken::GPROPERTY:
-                        classes.back().properties.push_back(GProperty(token_stream));
+                        classes.back().properties.emplace_back(token_stream);
                         break;
                     case GToken::GSIGNAL:
-                        classes.back().signals.push_back(GSignal(token_stream));
+                        classes.back().signals.emplace_back(token_stream);
                         break;
                     case GToken::GCLASS:
-                        classes.push_back(GClass(token_stream));
+                        classes.emplace_back(token_stream);
                         classes.back().path = file;
                         generatedFile.classes_indices.push(classes.size() - 1);
                         should_generate = true;
@@ -632,7 +632,7 @@ class Generator
                     case GToken::GENUM: add_enum(GEnum(token_stream)); break;
                     case GToken::GENERATED_BODY: classes.back().generator_line = token.line; break;
                     case GToken::GFUNCTION:
-                        classes.back().functions.push_back(GFunction(token_stream));
+                        classes.back().functions.emplace_back(token_stream);
                         break;
                 }
             }
