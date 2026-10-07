@@ -62,6 +62,7 @@ std::vector<GArgument> GArgument::read_garguments(TokenStream &token_stream)
         if (token.token == GToken::Asterisk)
         {
             gArgument.variantType = GType::NodePathToRaw;
+            gArgument.isPointer = true;
             token = token_stream.next();
         }
         else if (gArgument.raw_type == "float" || gArgument.raw_type == "double")
