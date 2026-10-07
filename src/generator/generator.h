@@ -692,12 +692,12 @@ class Generator
                     {
                         if (once)
                         {
-                            core_functions += argument.raw_type + " " + argument.name;
+                            core_functions += argument.get_full_type() + " " + argument.name;
                             once = false;
                         }
                         else
                         {
-                            core_functions += ", " + argument.raw_type + " " + argument.name;
+                            core_functions += ", " + argument.get_full_type() + " " + argument.name;
                         }
                     }
                     core_functions += "){\\\n\temit_signal(\"" + signal.name + '"';
