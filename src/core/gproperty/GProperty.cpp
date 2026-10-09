@@ -30,7 +30,7 @@ GProperty::GProperty(TokenStream &token_stream)
     }
     else
     {
-        variantType = TypeStringToGType(token.value);
+        variantType = TypeStringToGType(rawType);
     }
 
     if (token.token != GToken::Identifier)
