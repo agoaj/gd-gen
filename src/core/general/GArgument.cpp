@@ -57,7 +57,6 @@ std::vector<GArgument> GArgument::read_garguments(TokenStream &token_stream)
         }
         gArgument.raw_type = token.value;
 
-        // TODO: This is copied from GPROPERTY, create a common function
         token = token_stream.next();
         if (token.token == GToken::Asterisk)
         {
@@ -65,69 +64,9 @@ std::vector<GArgument> GArgument::read_garguments(TokenStream &token_stream)
             gArgument.isPointer = true;
             token = token_stream.next();
         }
-        else if (gArgument.raw_type == "float" || gArgument.raw_type == "double")
-        {
-            gArgument.variantType = GType::Float;
-        }
-        else if (gArgument.raw_type == "int")
-        {
-            gArgument.variantType = GType::Int;
-        }
-        else if (gArgument.raw_type == "bool")
-        {
-            gArgument.variantType = GType::Boolean;
-        }
-        else if (gArgument.raw_type == "String")
-        {
-            gArgument.variantType = GType::String;
-        }
-        else if (gArgument.raw_type == "PackedByteArray")
-        {
-            gArgument.variantType = GType::PackedByteArray;
-        }
-        else if (gArgument.raw_type == "PackedInt32Array")
-        {
-            gArgument.variantType = GType::PackedInt32Array;
-        }
-        else if (gArgument.raw_type == "PackedInt64Array")
-        {
-            gArgument.variantType = GType::PackedInt64Array;
-        }
-        else if (gArgument.raw_type == "PackedFloat32Array")
-        {
-            gArgument.variantType = GType::PackedFloat32Array;
-        }
-        else if (gArgument.raw_type == "PackedFloat64Array")
-        {
-            gArgument.variantType = GType::PackedFloat64Array;
-        }
-        else if (gArgument.raw_type == "PackedStringArray")
-        {
-            gArgument.variantType = GType::PackedStringArray;
-        }
-        else if (gArgument.raw_type == "PackedVector2Array")
-        {
-            gArgument.variantType = GType::PackedVector2Array;
-        }
-        else if (gArgument.raw_type == "PackedVector3Array")
-        {
-            gArgument.variantType = GType::PackedVector3Array;
-        }
-        else if (gArgument.raw_type == "PackedColorArray")
-        {
-            gArgument.variantType = GType::PackedColorArray;
-        }
-        else if (gArgument.raw_type == "PackedVector4Array")
-        {
-            gArgument.variantType = GType::PackedVector4Array;
-        }
-        else if (gArgument.raw_type.starts_with("Ref<"))
-        {
-            gArgument.variantType = GType::Resource;
-        }
         else
         {
-            gArgument.variantType = GType::Object;
+            gArgument.variantType = TypeStringToGType(gArgument.raw_type);
         }
 
         if (token.token != GToken::Identifier)

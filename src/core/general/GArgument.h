@@ -18,6 +18,7 @@ struct GArgument
     bool isPointer = false;
     bool isConst = false;
     
+    //TODO: refactor this out to a baked string, remove <format>
     //retures raw_type with const/ptr info
     std::string get_full_type() const { return std::format("{} {}{}", 
         isConst? "const" : "", raw_type, isPointer ? "*" : ""); } 

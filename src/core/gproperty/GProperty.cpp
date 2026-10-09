@@ -28,73 +28,9 @@ GProperty::GProperty(TokenStream &token_stream)
         variantType = GType::NodePathToRaw;
         token = token_stream.next();
     }
-    else if (rawType == "float" || rawType == "double")
-    {
-        variantType = GType::Float;
-    }
-    else if (rawType == "int")
-    {
-        variantType = GType::Int;
-    }
-    else if (rawType == "bool")
-    {
-        variantType = GType::Boolean;
-    }
-    else if (rawType == "String")
-    {
-        variantType = GType::String;
-    }
-    else if (rawType == "PackedByteArray")
-    {
-        variantType = GType::PackedByteArray;
-    }
-    else if (rawType == "PackedInt32Array")
-    {
-        variantType = GType::PackedInt32Array;
-    }
-    else if (rawType == "PackedInt64Array")
-    {
-        variantType = GType::PackedInt64Array;
-    }
-    else if (rawType == "PackedFloat32Array")
-    {
-        variantType = GType::PackedFloat32Array;
-    }
-    else if (rawType == "PackedFloat64Array")
-    {
-        variantType = GType::PackedFloat64Array;
-    }
-    else if (rawType == "PackedStringArray")
-    {
-        variantType = GType::PackedStringArray;
-    }
-    else if (rawType == "PackedVector2Array")
-    {
-        variantType = GType::PackedVector2Array;
-    }
-    else if (rawType == "PackedVector3Array")
-    {
-        variantType = GType::PackedVector3Array;
-    }
-    else if (rawType == "PackedColorArray")
-    {
-        variantType = GType::PackedColorArray;
-    }
-    else if (rawType == "PackedVector4Array")
-    {
-        variantType = GType::PackedVector4Array;
-    }
-    else if (rawType == "Variant")
-    {
-        variantType = GType::Variant;
-    }
-    else if (rawType.starts_with("Ref<"))
-    {
-        variantType = GType::Resource;
-    }
     else
     {
-        variantType = GType::Object;
+        variantType = TypeStringToGType(token.value);
     }
 
     if (token.token != GToken::Identifier)

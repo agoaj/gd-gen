@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 enum class GType
 {
@@ -20,7 +21,24 @@ enum class GType
     PackedVector3Array,
     PackedColorArray,
     PackedVector4Array,
+    Vector2,
+    Vector2i,
+    Rect2,
+    Rect2i,
+    Vector3,
+    Vector3i,
+    Transform2D,
+    Vector4,
+    Vector4i,
+    Plane,
+    Quaternion,
+    AABB,
+    Basis,
+    Transform3D,
+    Projection,
     String,
     Variant,
     Enum
 };
+
+GType TypeStringToGType(const std::string& typeString);

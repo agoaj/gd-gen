@@ -54,10 +54,26 @@ const std::string type_to_variant(GType type)
         case GType::PackedVector3Array: return "PACKED_VECTOR3_ARRAY";
         case GType::PackedColorArray: return "PACKED_COLOR_ARRAY";
         case GType::PackedVector4Array: return "PACKED_VECTOR4_ARRAY";
+        case GType::Vector2: return "VECTOR2";
+        case GType::Vector2i: return "VECTOR2I";
+        case GType::Rect2: return "RECT2";
+        case GType::Rect2i: return "RECT2I";
+        case GType::Vector3: return "VECTOR3";
+        case GType::Vector3i: return "VECTOR3I";
+        case GType::Transform2D: return "TRANSFORM2D";
+        case GType::Vector4: return "VECTOR4";
+        case GType::Vector4i: return "VECTOR4I";
+        case GType::Plane: return "PLANE";
+        case GType::Quaternion: return "QUATERNION";
+        case GType::AABB: return "AABB";
+        case GType::Basis: return "BASIS";
+        case GType::Transform3D: return "TRANSFORM3D";
+        case GType::Projection: return "PROJECTION";
         case GType::String: return "STRING";
         case GType::Enum: return "INT";
         case GType::Variant: return "NIL";
-        default: std::cerr << "Invalid type\n"; exit(1);
+        case GType::Invalid:
+        default: std::cerr << "Invalid type " << static_cast<unsigned int>(type) << std::endl; exit(1);
     }
 }
 

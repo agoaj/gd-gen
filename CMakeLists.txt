@@ -2,8 +2,13 @@ cmake_minimum_required(VERSION 3.17)
 project(gd-gen LANGUAGES CXX)
 
 file(GLOB_RECURSE MY_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE MY_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp)
+
 
 add_executable(gd-gen ${MY_SRC})
+
+target_sources(gd-gen PRIVATE FILE_SET HEADERS FILES ${MY_HEADERS})
+
 target_include_directories(gd-gen PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set_target_properties(gd-gen PROPERTIES 
 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} #place .exe right here in the gd-gen folder
