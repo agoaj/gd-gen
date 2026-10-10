@@ -325,7 +325,7 @@ class Generator
 
             for (auto &enum_value : enum_->second.values)
             {
-                hints += std::format("\"{}:\", (uint64_t){}::{},",
+                hints += std::format("\"{}:\", String::num_uint64((uint64_t){}::{}),",
                     enum_value.name, enum_->second.name, enum_value.name);
             }
             
