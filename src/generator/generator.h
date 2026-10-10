@@ -323,15 +323,18 @@ class Generator
             //make our string at runtime to use the enum values directly
             hints = "PROPERTY_HINT_ENUM, vformat(";
 
+            std::string separator = ",\",\" ";
             for (auto &enum_value : enum_->second.values)
             {
-                hints += std::format("\"{}:\", String::num_uint64((uint64_t){}::{}),",
-                    enum_value.name, enum_->second.name, enum_value.name);
+                hints += std::format("\"{}:\", String::num_uint64((uint64_t){}::{}){}",
+                    enum_value.name, enum_->second.name, enum_value.name, separator);
             }
             
             //remove trailing ','
-            if (hints.back() == ',')
-                hints.pop_back();
+            if (hints.ends_with(separator))
+            {
+                hints.resize(hints.length() - separator.length());
+            }
             hints += ")";
             needsCloseQuote = false;
         }
