@@ -314,25 +314,26 @@ class Generator
     {
         std::string hints = "PROPERTY_HINT_NONE, \"";
 
+        bool needsCloseQuote = true;
         const auto &enum_ = enums.find(property.rawType);
         if (enum_ != enums.end())
         {
             property.variantType = GType::Enum;
-
-            // TODO: move this to switch case below
-            hints = "PROPERTY_HINT_ENUM, \"";
+            
+            //make our string at runtime to use the enum values directly
+            hints = "PROPERTY_HINT_ENUM, vformat(";
 
             for (auto &enum_value : enum_->second.values)
             {
-                hints += enum_value.name;
-                if (enum_value.value.has_value())
-                {
-                    hints += '=' + std::to_string(enum_value.value.value());
-                }
-                hints += ',';
+                hints += std::format("\"{}:\", (uint64_t){}::{},",
+                    enum_value.name, enum_->second.name, enum_value.name);
             }
-
-            hints = hints.substr(0, hints.length() - 1);
+            
+            //remove trailing ','
+            if (hints.back() == ',')
+                hints.pop_back();
+            hints += ")";
+            needsCloseQuote = false;
         }
 
         switch (property.variantType)
@@ -384,6 +385,8 @@ class Generator
             default: break;
         }
 
+        if (needsCloseQuote)
+            hints.push_back('\"');
         return hints;
     }
 
@@ -524,10 +527,10 @@ class Generator
         std::string property_info_no_grouping = property_info_grouping;
 
         property_info_grouping += registered_name;
-        property_info_grouping += "\", " + hints + "\", ";
+        property_info_grouping += "\", " + hints + ", ";
 
         property_info_no_grouping += final_property_name;
-        property_info_no_grouping += "\", " + hints + "\", PROPERTY_USAGE_NONE)";
+        property_info_no_grouping += "\", " + hints + ", PROPERTY_USAGE_NONE)";
 
         if (property.options.hideInInspector)
         {
