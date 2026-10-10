@@ -325,7 +325,7 @@ class Generator
 
             for (auto &enum_value : enum_->second.values)
             {
-                hints += std::format("{}::%d,",
+                hints += std::format("{}:%d,",
                     enum_value.name, enum_->second.name, enum_value.name);
             }
             if (hints.back() == ',')
@@ -334,7 +334,7 @@ class Generator
             
             for (auto &enum_value : enum_->second.values)
             {
-                hints += std::format("(int64_t){}:{},",
+                hints += std::format("(int64_t){}::{},",
                     enum_->second.name, enum_value.name);
             }
             
