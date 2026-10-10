@@ -321,21 +321,27 @@ class Generator
             property.variantType = GType::Enum;
             
             //make our string at runtime to use the enum values directly
-            hints = "PROPERTY_HINT_ENUM, vformat(";
+            hints = "PROPERTY_HINT_ENUM, vformat(\"";
 
-            std::string separator = ",\",\" ";
             for (auto &enum_value : enum_->second.values)
             {
-                hints += std::format("\"{}:\", String::num_uint64((uint64_t){}::{}){}",
-                    enum_value.name, enum_->second.name, enum_value.name, separator);
+                hints += std::format("{}:%d,",
+                    enum_value.name, enum_->second.name, enum_value.name);
+            }
+            if (hints.back() == ',')
+                hints.pop_back();
+            hints += "\", ";
+            
+            for (auto &enum_value : enum_->second.values)
+            {
+                hints += std::format("(int64_t){}:{},",
+                    enum_->second.name, enum_value.name);
             }
             
-            //remove trailing ','
-            if (hints.ends_with(separator))
-            {
-                hints.resize(hints.length() - separator.length());
-            }
-            hints += ")";
+            if (hints.back() == ',')
+                hints.pop_back();
+            hints.push_back(')');
+            
             needsCloseQuote = false;
         }
 
