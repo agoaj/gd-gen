@@ -111,7 +111,9 @@ void generate_register_types(std::vector<GClass> classes, std::filesystem::path 
         }
     }
     GeneratedFile << "(void)0";
-
+    
+    //ensure file ends in a new line to avoid 'backslash-newline at end of file' warning
+    GeneratedFile << "\n";
     GeneratedFile.close();
 }
 
@@ -858,7 +860,9 @@ class Generator
                               << "_CORE_GENERATED_BODY()\\\n"
                               << core_functions;
             }
-
+            
+            //ensure file ends in a new line to avoid 'backslash-newline at end of file' warning
+            GeneratedFile << "\n";
             GeneratedFile.close();
         }
 
