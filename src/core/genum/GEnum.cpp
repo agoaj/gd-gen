@@ -119,10 +119,9 @@ GEnum::GEnum(TokenStream &token_stream)
         }
         enumValue.name = token.value;
 
-        token = token_stream.next();
-
-        if (token.token == GToken::Equal)
+        if (token_stream.peek().token == GToken::Equal)
         {
+            token = token_stream.next();
             token = token_stream.next();
 
             if (token.token != GToken::Integer)

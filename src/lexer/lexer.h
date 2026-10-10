@@ -68,6 +68,11 @@ class TokenStream
         tokens.pop();
         return token;
     }
+    
+    TokenValue peek()
+    {
+        return tokens.front();
+    }
 
     bool empty() { return tokens.empty(); }
 
