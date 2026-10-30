@@ -261,26 +261,27 @@ class Generator
                               << "(NodePath value){\\\n\t" << sanitized_property_name
                               << "_path = value;\\\n\t" << final_property_accessor
                               << " = nullptr;\\\n";
-            }
+            
 
-            if (_class.parentName != "Resource" && !_class.options.is_resource &&
-                property.options.isRequired)  // TODO check this later
-            {
-                GeneratedFile << "\tupdate_configuration_warnings();\\\n";
-                requirements += "if (";
-                if (generate_get)
+                if (_class.parentName != "Resource" && !_class.options.is_resource &&
+                    property.options.isRequired)  // TODO check this later
                 {
-                    requirements += sanitized_property_name + "_path.is_empty()";
+                    GeneratedFile << "\tupdate_configuration_warnings();\\\n";
+                    requirements += "if (";
+                    if (generate_get)
+                    {
+                        requirements += sanitized_property_name + "_path.is_empty()";
+                    }
+                    else
+                    {
+                        requirements += property.options.custom_getter + ".is_empty()";
+                    }
+                    requirements +=
+                        ") { array.append(\"Missing " + final_property_accessor + "\"); }\\\n";
                 }
-                else
-                {
-                    requirements += property.options.custom_getter + ".is_empty()";
-                }
-                requirements +=
-                    ") { array.append(\"Missing " + final_property_accessor + "\"); }\\\n";
-            }
 
-            GeneratedFile << "notify_property_list_changed();\\\n}\\\n";
+                GeneratedFile << "notify_property_list_changed();\\\n}\\\n";
+            }
             return;
         }
 
