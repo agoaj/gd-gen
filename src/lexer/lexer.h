@@ -86,7 +86,7 @@ class Parser
     inline void ignore_until_end_comment();
     inline TokenValue read_identifier();
     inline TokenValue read_number();
-    inline TokenValue read_string();
+    inline TokenValue read_string(char openedWithChar);
     std::ifstream file;
     std::string file_name;
 

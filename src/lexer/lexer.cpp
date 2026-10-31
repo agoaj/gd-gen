@@ -185,13 +185,27 @@ inline void Parser::ignore_until_end_comment()
     }
 }
 
-inline TokenValue Parser::read_string()
+inline TokenValue Parser::read_string(char openedWithChar)
 {
     std::string str;
     char c;
     while (file.get(c))
     {
-        if (c == '"' || c == '\'')
+        if (c == '\n')
+            ++cur_line;
+        if (c == '\\')
+        {
+            char p = file.peek();
+            //skips "\\" and "\""
+            if (p == '\\' || p == openedWithChar)
+            {
+                str.push_back(c);
+                file.get(c);
+                str.push_back(c);
+                continue;
+            }
+        }
+        if (c == openedWithChar)
         {
             return TokenValue{
                 GToken::String,
@@ -430,8 +444,8 @@ TokenStream Parser::parse()
                 file.putback(c);
                 tokens.push(read_identifier());
                 break;
-            case SpecialChars::SingleQuote:
-            case SpecialChars::DoubleQuote: tokens.push(read_string()); break;
+            case SpecialChars::SingleQuote: tokens.push(read_string('\'')); break;
+            case SpecialChars::DoubleQuote: tokens.push(read_string('"')); break;
             case SpecialChars::Digit:
                 file.putback(c);
                 tokens.push(read_number());
