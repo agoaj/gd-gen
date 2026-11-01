@@ -80,7 +80,7 @@ const std::string type_to_variant(GType type)
 void generate_register_types(std::vector<GClass> classes, std::filesystem::path srcFolder,
                              std::filesystem::path genFolder)
 {
-    std::ofstream GeneratedFile(genFolder / "register_types.generated.h");
+    std::stringstream GeneratedFile;
 
     for (auto &class_ : classes)
     {
@@ -114,7 +114,31 @@ void generate_register_types(std::vector<GClass> classes, std::filesystem::path 
     
     //ensure file ends in a new line to avoid 'backslash-newline at end of file' warning
     GeneratedFile << "\n";
-    GeneratedFile.close();
+    
+    const std::string newFileData = GeneratedFile.str();
+    bool canWriteNewFile = true;
+    const std::filesystem::path outputPath = genFolder / "register_types.generated.h";
+    //compare if generated file matches, we don't need to rewrite to disk
+    //May be a faster way to do this, we can do a raw mem comparison, files should be byte for byte identical
+    if (std::filesystem::exists(outputPath))
+    {
+        std::ifstream fileStream(outputPath);
+        std::stringstream fileStringStream;
+        fileStringStream << fileStream.rdbuf();
+        fileStream.close();
+        const std::string currentFile = fileStringStream.str();
+        
+        if (currentFile == newFileData)
+        {
+            canWriteNewFile = false;
+        }
+    }
+    if (canWriteNewFile)
+    {
+        std::ofstream fileStream(outputPath);
+        fileStream << newFileData;
+        fileStream.close();
+    }
 }
 
 void appendPaths(std::vector<std::filesystem::path> &srcFiles, std::filesystem::path path,
@@ -607,7 +631,7 @@ class Generator
                 classNameToPathMap[gclass.name] = GClassPath(std::move(classPath), parents.size());
             }
         
-            std::sort(classes.begin(), classes.end(), [&](const GClass& gclassA, const GClass& gclassB) -> bool
+            std::stable_sort(classes.begin(), classes.end(), [&](const GClass& gclassA, const GClass& gclassB) -> bool
             {
                 GClassPath& pathA = classNameToPathMap[gclassA.name];
                 GClassPath& pathB = classNameToPathMap[gclassB.name];
@@ -681,7 +705,25 @@ class Generator
             std::string generated_filename = generatedFile.src_path.string().substr(
                 srcFolder.string().size() + 1, lastindex - srcFolder.string().size() - 1);
             std::string file_id = sanitize_path_to_id(generated_filename);
-            std::ofstream GeneratedFile(genFolder / (generated_filename + ".generated.h"));
+            std::filesystem::path generated_file_path = genFolder / (generated_filename + ".generated.h");
+            {
+                //if generated file already exists, only parse and regen if the source file or newer OR TODO: our exe is newer.
+                if (std::filesystem::exists(generated_file_path))
+                {
+                    std::error_code fileError;
+                    std::filesystem::file_time_type generatedTime = std::filesystem::last_write_time(
+                        generated_file_path, fileError);
+                    std::filesystem::file_time_type sourceTime = std::filesystem::last_write_time(
+                        generatedFile.src_path, fileError);
+                    //std::cout << "SourceTime: " << sourceTime << " GenTime: " << generatedTime << std::endl;
+                    if (sourceTime < generatedTime)
+                    {
+                        //std::cout << "Skipping regen of " << generated_filename << std::endl;
+                        continue;
+                    }
+                }
+            }
+            std::ofstream GeneratedFile(generated_file_path);
 
             GeneratedFile << "#include <gd-gen/src/gd-gen_macros.hpp>\n";
 
