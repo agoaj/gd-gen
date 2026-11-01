@@ -5,7 +5,7 @@ GType TypeStringToGType(const std::string& typeString)
 {
     if (typeString == "float" || typeString == "double")
         return GType::Float;
-    if (typeString == "int")
+    if (typeString == "int" || typeString == "int64_t" || typeString == "int32_t")
         return GType::Int;
     if (typeString == "bool")
         return GType::Boolean;
