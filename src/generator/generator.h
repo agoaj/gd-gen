@@ -750,7 +750,7 @@ class Generator
                 }
 
                 GeneratedFile << "void "
-                              << "_get_property_list(List<PropertyInfo> *p_list) {\\\n\t";
+                              << "_get_property_list(List<PropertyInfo> *p_list) const {\\\n\t";
 
                 GeneratedFile << _class.name << "_GENERATED_PROPERTY_LIST();\\\n";
 
@@ -811,6 +811,9 @@ class Generator
 
                     core_functions += "void connect_" + signal.name +
                                       "(Callable callable){\\\n\tconnect(\"" + signal.name +
+                                      "\", callable);\\\n}\\\n";
+                    core_functions += "void disconnect_" + signal.name +
+                                      "(Callable callable){\\\n\tdisconnect(\"" + signal.name +
                                       "\", callable);\\\n}\\\n";
                 }
 
