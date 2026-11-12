@@ -378,14 +378,14 @@ class Generator
             case GType::Resource:
                 hints =
                     "PROPERTY_HINT_RESOURCE_TYPE, \"" +
-                    treatPropertyType(property.rawType.substr(4, property.rawType.length() - 5));
+                    treatPropertyType(property.options.supportedTypes.empty() ? property.rawType.substr(4, property.rawType.length() - 5) : property.options.supportedTypes);
                 break;
             case GType::Node:
-                hints = "PROPERTY_HINT_NODE_TYPE, \"" + treatPropertyType(property.rawType);
+                hints = "PROPERTY_HINT_NODE_TYPE, \"" + treatPropertyType(property.options.supportedTypes.empty() ? property.rawType : property.options.supportedTypes);
                 break;
             case GType::NodePathToRaw:
                 hints =
-                    "PROPERTY_HINT_NODE_PATH_VALID_TYPES, \"" + treatPropertyType(property.rawType);
+                    "PROPERTY_HINT_NODE_PATH_VALID_TYPES, \"" + treatPropertyType(property.options.supportedTypes.empty() ? property.rawType : property.options.supportedTypes);
                 break;
             case GType::String:
                 if (property.options.multiline_text)

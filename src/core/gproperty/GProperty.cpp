@@ -338,6 +338,55 @@ GPropertyOptions::GPropertyOptions(TokenStream &token_stream)
                 exit(1);
             }
         }
+        else if (token.value == "SupportedTypes")
+        {
+            token = token_stream.next();
+
+            if (token.token != GToken::LeftParenthesis)
+            {
+                Logger::log("SupportedTypes expected left parenthesis, got '" + token.value + "'",
+                            LogLevel::Error, token_stream.get_filename(), token.line);
+                exit(1);
+            }
+
+            token = token_stream.next();
+
+            if (token.token != GToken::Identifier)
+            {
+                Logger::log("SupportedTypes expected an identifier, got '" + token.value + "'",
+                            LogLevel::Error, token_stream.get_filename(), token.line);
+                exit(1);
+            }
+
+            supportedTypes = token.value;
+
+            for (token = token_stream.next(); token.token != GToken::RightParenthesis; token = token_stream.next())
+            {
+                if (token.token != GToken::Comma)
+                {
+                    Logger::log("SupportedTypes expected comma, got '" + token.value + "'", LogLevel::Error,
+                                token_stream.get_filename(), token.line);
+                    exit(1);
+                }
+                token = token_stream.next();
+
+                if (token.token != GToken::Identifier)
+                {
+                    Logger::log("SupportedTypes expected an identifier, got '" + token.value + "'",
+                                LogLevel::Error, token_stream.get_filename(), token.line);
+                    exit(1);
+                }
+                supportedTypes.append(",");
+                supportedTypes.append(token.value);
+            }
+            
+            if (token.token != GToken::RightParenthesis)
+            {
+                Logger::log("SupportedTypes expected right parenthesis, got '" + token.value + "'",
+                            LogLevel::Error, token_stream.get_filename(), token.line);
+                exit(1);
+            }
+        }
         else
         {
             Logger::log("Unknown flag, got '" + token.value + "'", LogLevel::Error,

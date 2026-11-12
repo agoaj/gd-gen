@@ -30,6 +30,7 @@ Registers a property inside the class.
 - `Group("MyGroup/MySubgroup/MySubSubGroup")` - Organizes the property under nested group categories in the inspector. Groups and subgroups are separated by /.
 - `ReadOnly` - Sets the property as read only in the inspector.
 - `Untyped` - If the type is `Variant`, allows any type of variant to be selected in editor.
+- `SupportedTypes(TypeA,TypeB)' - Will only let the editor select these types in the resource or node picker.
 
 > ⚠️ **Note:** The methods used in `Getter` and `Setter` must be registered using `GFUNCTION(...)`,
 > or manually bound using `ClassDB::bind_method`, otherwise the property binding **will not work**.

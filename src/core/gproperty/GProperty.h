@@ -28,6 +28,7 @@ struct GPropertyOptions
     std::string custom_getter;
     std::string custom_setter;
     std::string group;
+    std::string supportedTypes;
 
     // Maybe create a proper struct parsing stuff instead of this
     bool range_enabled = false;

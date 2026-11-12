@@ -29,7 +29,9 @@ constexpr bool is_valid_gproperty_flag(const char *flag)
 
     if (starts_with(flag, "Group("))  // TODO: Validate value
         return true;
-
+    
+    if (starts_with(flag, "SupportedTypes("))
+        return true;
     // if (starts_with(flag, "EditableIf("))  // TODO: Validate value
     //     return true;
 
