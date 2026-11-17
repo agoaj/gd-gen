@@ -92,6 +92,34 @@ void generate_register_types(std::vector<GClass> classes, std::filesystem::path 
     GeneratedFile << "\n#define GENERATED_TYPES() ";
     for (auto &class_ : classes)
     {
+        if (class_.options.is_editor_class)
+            continue;
+        switch (class_.options.class_type)
+        {
+            case GClassType::Base:
+                GeneratedFile << "GDREGISTER_CLASS(" << class_.name << ");\\\n";
+                break;
+            case GClassType::Virtual:
+                GeneratedFile << "GDREGISTER_VIRTUAL_CLASS(" << class_.name << ");\\\n";
+                break;
+            case GClassType::Abstract:
+                GeneratedFile << "GDREGISTER_ABSTRACT_CLASS(" << class_.name << ");\\\n";
+                break;
+            case GClassType::Runtime:
+                GeneratedFile << "GDREGISTER_RUNTIME_CLASS(" << class_.name << ");\\\n";
+                break;
+            case GClassType::Internal:
+                GeneratedFile << "GDREGISTER_INTERNAL_CLASS(" << class_.name << ");\\\n";
+                break;
+        }
+    }
+    GeneratedFile << "(void)0";
+    
+    GeneratedFile << "\n#define GENERATED_EDITOR_TYPES() ";
+    for (auto &class_ : classes)
+    {
+        if (!class_.options.is_editor_class)
+            continue;
         switch (class_.options.class_type)
         {
             case GClassType::Base:

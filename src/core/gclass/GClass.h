@@ -20,6 +20,7 @@ struct GClassOptions
 {
     bool is_resource = false;
     bool custom_bindings = false;
+    bool is_editor_class = false;
     GClassType class_type = GClassType::Base;
 
     GClassOptions() {}

@@ -95,6 +95,10 @@ GClassOptions::GClassOptions(TokenStream &token_stream)
             }
             class_type = GClassType::Internal;
         }
+        else if (token.value == "Editor")
+        {
+            is_editor_class = true;
+        }
         else
         {
             Logger::log("Unknown GClass option '" + token.value + "'", LogLevel::Error,
