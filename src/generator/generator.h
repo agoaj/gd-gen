@@ -729,6 +729,7 @@ class Generator
             }
         }
         
+        //Get our binary executable's last modified time so we can know if we need to do a full regen.
         std::filesystem::file_time_type executableFileTime = {};
         {
             auto executablePath = reflection::get_executable_path();
@@ -738,7 +739,6 @@ class Generator
                 executableFileTime = std::filesystem::last_write_time(executablePath, fileError);
             }
         }
-        
 
         for (auto &generatedFile : generatedFiles)
         {
