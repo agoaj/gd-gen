@@ -13,6 +13,8 @@ target_include_directories(gd-gen PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set_target_properties(gd-gen PROPERTIES 
 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} #place .exe right here in the gd-gen folder
 CXX_STANDARD 20 #Using C++20
+CXX_STANDARD_REQUIRED ON
+CXX_EXTENSIONS OFF #Nothing compiler specific
 )
 target_compile_options(gd-gen PRIVATE #Is this needed?
     $<$<CONFIG:Release>:-O3 -Ofast>

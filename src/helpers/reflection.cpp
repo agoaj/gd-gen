@@ -32,7 +32,7 @@ std::filesystem::path reflection::get_executable_path()
     if (error == 0)
     {
         //remove any ./..
-        return std::filesystem::canonical(path.data());
+        return std::filesystem::canonical(pathChars.data());
     }
     return {};
 #endif

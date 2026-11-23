@@ -740,9 +740,22 @@ class Generator
             }
         }
         constexpr bool printFileTimeDebugInfo = false;
+        //TODO: move this elsewhere
+        auto timeStampToStr = [](std::filesystem::file_time_type timeStamp) -> std::string
+        {
+#ifdef __APPLE__
+            auto t = std::chrono::file_clock::to_sys(timeStamp);
+            std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::time_point_cast<std::chrono::system_clock::duration>(t));
+            std::tm tm{};
+            gmtime_r(&time, &tm);
+            return (std::stringstream{} << std::put_time(&tm, "%Y-%m-%d %H:%M:%S")).str();
+#else
+            return timeStamp;
+#endif
+        };
         if constexpr(printFileTimeDebugInfo)
         {
-            std::cout << "ExeTime: " << executableFileTime << std::endl;
+            std::cout << "ExeTime: " << timeStampToStr(executableFileTime) << std::endl;
         }
 
         for (auto &generatedFile : generatedFiles)
@@ -765,7 +778,7 @@ class Generator
                         generatedFile.src_path, fileError);
                     if constexpr(printFileTimeDebugInfo)
                     {
-                        std::cout << "SourceTime: " << sourceTime << " GenTime: " << generatedTime << std::endl;
+                        std::cout << "SourceTime: " << timeStampToStr(sourceTime) << " GenTime: " << timeStampToStr(generatedTime) << std::endl;
                     }
                     if (sourceTime < generatedTime && executableFileTime < generatedTime)
                     {
