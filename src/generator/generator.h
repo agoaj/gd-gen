@@ -739,9 +739,15 @@ class Generator
                 executableFileTime = std::filesystem::last_write_time(executablePath, fileError);
             }
         }
+        constexpr bool printFileTimeDebugInfo = false;
+        if constexpr(printFileTimeDebugInfo)
+        {
+            std::cout << "ExeTime: " << executableFileTime << std::endl;
+        }
 
         for (auto &generatedFile : generatedFiles)
         {
+            
             std::string requirements;
             size_t lastindex = generatedFile.src_path.string().find_last_of(".");
             std::string generated_filename = generatedFile.src_path.string().substr(
@@ -757,10 +763,16 @@ class Generator
                         generated_file_path, fileError);
                     std::filesystem::file_time_type sourceTime = std::filesystem::last_write_time(
                         generatedFile.src_path, fileError);
-                    //std::cout << "SourceTime: " << sourceTime << " GenTime: " << generatedTime << std::endl;
-                    if (sourceTime < generatedTime && executableFileTime < sourceTime)
+                    if constexpr(printFileTimeDebugInfo)
                     {
-                        //std::cout << "Skipping regen of " << generated_filename << std::endl;
+                        std::cout << "SourceTime: " << sourceTime << " GenTime: " << generatedTime << std::endl;
+                    }
+                    if (sourceTime < generatedTime && executableFileTime < generatedTime)
+                    {
+                        if constexpr(printFileTimeDebugInfo)
+                        {
+                            std::cout << "Skipping regen of " << generated_filename << std::endl;
+                        }
                         continue;
                     }
                 }
