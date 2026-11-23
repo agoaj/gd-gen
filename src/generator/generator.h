@@ -17,6 +17,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "helpers/reflection.h"
+
 std::string treatPropertyType(std::string str)
 {
     for (auto &c : str)
@@ -298,8 +300,8 @@ class Generator
             if (generate_get)
             {
                 core_functions += property.rawType + " *get_" + sanitized_property_name +
-                                  "(){\\\n\tif(" + final_property_accessor + " == nullptr) { " +
-                                  final_property_accessor + " = Object::cast_to<" +
+                                  "()const{\\\n\tif(" + final_property_accessor + " == nullptr) { " +
+                                  "const_cast<" + _class.name + "*>(this)->" + final_property_accessor + " = Object::cast_to<" +
                                   property.rawType + ">(get_node_or_null(" +
                                   sanitized_property_name + "_path)); }\\\n\treturn " +
                                   final_property_accessor + ";\\\n}\\\n";
@@ -726,6 +728,17 @@ class Generator
                 generatedFiles.push_back(generatedFile);
             }
         }
+        
+        std::filesystem::file_time_type executableFileTime = {};
+        {
+            auto executablePath = reflection::get_executable_path();
+            if (std::filesystem::exists(executablePath))
+            {
+                std::error_code fileError;
+                executableFileTime = std::filesystem::last_write_time(executablePath, fileError);
+            }
+        }
+        
 
         for (auto &generatedFile : generatedFiles)
         {
@@ -736,7 +749,7 @@ class Generator
             std::string file_id = sanitize_path_to_id(generated_filename);
             std::filesystem::path generated_file_path = genFolder / (generated_filename + ".generated.h");
             {
-                //if generated file already exists, only parse and regen if the source file or newer OR TODO: our exe is newer.
+                //if generated file already exists, only parse and regen if the source file or newer OR our exe is newer.
                 if (std::filesystem::exists(generated_file_path))
                 {
                     std::error_code fileError;
@@ -745,7 +758,7 @@ class Generator
                     std::filesystem::file_time_type sourceTime = std::filesystem::last_write_time(
                         generatedFile.src_path, fileError);
                     //std::cout << "SourceTime: " << sourceTime << " GenTime: " << generatedTime << std::endl;
-                    if (sourceTime < generatedTime)
+                    if (sourceTime < generatedTime && executableFileTime < sourceTime)
                     {
                         //std::cout << "Skipping regen of " << generated_filename << std::endl;
                         continue;
