@@ -743,17 +743,12 @@ class Generator
         //TODO: move this elsewhere
         auto timeStampToStr = [](std::filesystem::file_time_type timeStamp) -> std::string
         {
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__linux__)
             auto t = std::chrono::file_clock::to_sys(timeStamp);
             std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::time_point_cast<std::chrono::system_clock::duration>(t));
             std::tm tm{};
             gmtime_r(&time, &tm);
             return (std::stringstream{} << std::put_time(&tm, "%Y-%m-%d %H:%M:%S")).str();
-#elif defined(__linux__);
-            std::time_t time = std::chrono::system_clock::to_time_t(
-                std::chrono::time_point_cast<std::chrono::system_clock::duration>(
-                    std::chrono::file_clock::to_sys(timeStamp)));
-            return (std::stringstream{} << std::put_time(std::gmtime_r(&time), "%Y-%m-%d %H:%M:%S")).str();
 #elif defined(_WIN32)
             return (std::stringstream{} << timeStamp).str();
 #endif
