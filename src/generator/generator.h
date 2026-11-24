@@ -750,7 +750,7 @@ class Generator
             gmtime_r(&time, &tm);
             return (std::stringstream{} << std::put_time(&tm, "%Y-%m-%d %H:%M:%S")).str();
 #else
-            return timeStamp;
+            return (std::stringstream{} << timeStamp).str();
 #endif
         };
         if constexpr(printFileTimeDebugInfo)
