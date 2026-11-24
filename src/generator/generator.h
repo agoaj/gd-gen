@@ -749,12 +749,12 @@ class Generator
             std::tm tm{};
             gmtime_r(&time, &tm);
             return (std::stringstream{} << std::put_time(&tm, "%Y-%m-%d %H:%M:%S")).str();
-#else defined(__linux__);
+#elif defined(__linux__);
             std::time_t time = std::chrono::system_clock::to_time_t(
                 std::chrono::time_point_cast<std::chrono::system_clock::duration>(
                     std::chrono::file_clock::to_sys(timeStamp)));
             return (std::stringstream{} << std::put_time(std::gmtime_r(&time), "%Y-%m-%d %H:%M:%S")).str();
-#else defined(_WIN32)
+#elif defined(_WIN32)
             return (std::stringstream{} << timeStamp).str();
 #endif
         };
